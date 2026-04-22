@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8"/>
+  <title>Επεξεργασία τραγουδιού — Admin</title>
+  <link rel="stylesheet" href="_wireframe.css"/>
+  <style>
+    .editor-shell {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: var(--space-4);
+    }
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--charcoal);
+      margin-bottom: var(--space-4);
+    }
+    .tabs a {
+      padding: 10px 18px;
+      font-size: var(--text-sm);
+      color: var(--stone);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      letter-spacing: 0.02em;
+    }
+    .tabs a[aria-current="page"] {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+      font-weight: 500;
+    }
+    .tabs a .count {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: var(--text-2xs);
+      color: var(--ash);
+      padding: 1px 6px;
+      background: var(--paper);
+      border-radius: 8px;
+    }
+    .form-group {
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px dotted var(--fog);
+    }
+    .form-group:last-child { border-bottom: none; }
+    .form-group h3 {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: var(--text-md);
+      color: var(--ink);
+      margin-bottom: var(--space-1);
+    }
+    .form-group p.hint {
+      font-size: var(--text-xs);
+      color: var(--ash);
+      margin-bottom: var(--space-2);
+      max-width: 60ch;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-2);
+    }
+    .category-slot {
+      padding: var(--space-2);
+      border: 1px solid var(--fog);
+      background: var(--white);
+    }
+    .category-slot .slot-label {
+      font-size: var(--text-2xs);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ash);
+      margin-bottom: 4px;
+    }
+    .markdown-ed {
+      border: 1px solid var(--fog);
+      background: var(--white);
+    }
+    .markdown-ed .toolbar {
+      display: flex;
+      gap: 4px;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--fog);
+      background: var(--paper);
+    }
+    .markdown-ed .toolbar button {
+      width: 28px; height: 28px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--stone);
+      font-family: var(--font-serif);
+      cursor: pointer;
+    }
+    .markdown-ed .toolbar button:hover { background: var(--white); border-color: var(--fog); }
+    .markdown-ed textarea {
+      width: 100%;
+      border: none;
+      padding: var(--space-2);
+      font-family: var(--font-serif);
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--charcoal);
+      resize: vertical;
+      outline: none;
+    }
+    .markdown-ed .wc {
+      padding: 6px 10px;
+      border-top: 1px dotted var(--fog);
+      font-size: var(--text-2xs);
+      color: var(--ash);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+    .sources-list {
+      list-style: none;
+      margin-top: var(--space-2);
+    }
+    .sources-list li {
+      display: grid;
+      grid-template-columns: 110px 1fr auto;
+      gap: var(--space-2);
+      padding: 10px 0;
+      border-bottom: 1px dotted var(--fog);
+      align-items: center;
+    }
+    .sources-list li:last-child { border-bottom: none; }
+    .sources-list .kind {
+      font-size: var(--text-2xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ash);
+    }
+    .sources-list .val {
+      font-size: var(--text-sm);
+      color: var(--charcoal);
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+    .audio-dropzone {
+      border: 2px dashed var(--fog);
+      background: var(--paper);
+      padding: var(--space-5);
+      text-align: center;
+      color: var(--stone);
+    }
+    .audio-dropzone strong { color: var(--ink); font-weight: 500; font-size: var(--text-md); }
+    .audio-dropzone p { font-size: var(--text-sm); margin-top: 6px; }
+    .xref-picker {
+      border: 1px solid var(--fog);
+      padding: var(--space-2);
+      background: var(--paper);
+    }
+    .side-meta {
+      font-size: var(--text-sm);
+      padding: var(--space-3);
+      border: 1px solid var(--fog);
+      background: var(--paper);
+      position: sticky;
+      top: var(--space-3);
+    }
+    .side-meta dl { display: grid; grid-template-columns: auto 1fr; gap: 6px var(--space-2); }
+    .side-meta dt { color: var(--ash); font-size: var(--text-xs); letter-spacing: 0.06em; }
+    .side-meta dd { color: var(--charcoal); text-align: right; }
+    .side-meta .save-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: var(--space-3);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--fog);
+    }
+    .side-meta .save-row .btn { width: 100%; text-align: center; }
+    .danger-zone {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px dotted var(--fog);
+    }
+    .danger-zone button {
+      background: transparent;
+      border: 1px solid var(--fog);
+      color: #b44;
+      font-size: var(--text-xs);
+      padding: 6px 10px;
+      width: 100%;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .editor-shell { grid-template-columns: 1fr; }
+      .side-meta { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <aside>
+      <div style="padding: 0 var(--space-3) var(--space-3); font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: var(--text-lg); color: var(--ink); border-bottom: 1px solid var(--fog); margin-bottom: var(--space-2);">
+        Ταξίδι στην Παράδοση
+        <div class="label-tracked" style="margin-top: 6px; color: var(--ash); font-style: normal; font-family: var(--font-sans); letter-spacing: 0.2em;">Διαχείριση</div>
+      </div>
+      <ul class="adminnav">
+        <li><a href="vaggelis-admin-dashboard.html">Ταμπλό</a></li>
+        <li><span class="group">Περιεχόμενο</span></li>
+        <li><a href="vaggelis-admin-songs-list.html" aria-current="page">Τραγούδια</a></li>
+        <li><a href="#">Κατηγορίες</a></li>
+        <li><a href="#">Ρυθμοί</a></li>
+        <li><a href="#">Χοροί</a></li>
+        <li><a href="#">Γλώσσες</a></li>
+        <li><a href="#">Παραρτήματα</a></li>
+        <li><span class="group">Γεωγραφία</span></li>
+        <li><a href="vaggelis-admin-region-editor.html">Περιοχές</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <nav class="meta" style="margin-bottom: var(--space-2);">
+        <a href="vaggelis-admin-songs-list.html" class="link">Τραγούδια</a>
+        <span style="color: var(--mist); margin: 0 8px;">›</span>
+        <span style="color: var(--stone);">EPE-THS-001</span>
+      </nav>
+
+      <header class="admin-header" style="margin-bottom: var(--space-3);">
+        <div>
+          <div class="meta" style="margin-bottom: 4px; font-family: 'JetBrains Mono', Consolas, monospace; letter-spacing: 0.1em;">EPE-THS-001 · έκδοση 4</div>
+          <h1>Μπρυσούδα μου τριχαμνιά</h1>
+          <p class="meta">Τελευταία ενημέρωση: πριν 12′ από εσάς</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn--ghost btn--sm" href="vaggelis-song-detail.html" target="_blank">Προεπισκόπηση δημόσια ↗</a>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="Καρτέλες τραγουδιού">
+        <a href="#" aria-current="page">Βασικά</a>
+        <a href="#">Κείμενα <span class="count">3</span></a>
+        <a href="#">Κατηγορίες <span class="count">2</span></a>
+        <a href="#">Πηγές <span class="count">3</span></a>
+        <a href="#">Ήχος</a>
+        <a href="#">Παραπομπές <span class="count">4</span></a>
+      </nav>
+
+      <div class="editor-shell">
+        <div>
+          <!-- Basics -->
+          <div class="form-group">
+            <h3>Βασικά στοιχεία</h3>
+            <div class="two-col">
+              <div class="field">
+                <label>Τίτλος *</label>
+                <input class="input" value="Μπρυσούδα μου τριχαμνιά"/>
+              </div>
+              <div class="field">
+                <label>Εναλλακτικός τίτλος</label>
+                <input class="input" value="Βρύση μου πετροκαμάρι"/>
+              </div>
+            </div>
+            <div class="field">
+              <label>Ηχογράφηση από</label>
+              <input class="input" value="Ν. Παπαδόπουλος" placeholder="π.χ. όνομα συλλέκτη"/>
+            </div>
+          </div>
+
+          <!-- Geography -->
+          <div class="form-group">
+            <h3>Γεωγραφία</h3>
+            <p class="hint">Το τραγούδι ανήκει υποχρεωτικά σε μία περιοχή. Τα υπόλοιπα πεδία είναι προαιρετικά. Ο κωδικός EPE-THS-001 παραμένει σταθερός ακόμα κι αν η γεωγραφία αλλάξει.</p>
+            <div class="three-col">
+              <div class="field">
+                <label>Περιοχή *</label>
+                <select class="select"><option>Ήπειρος</option></select>
+              </div>
+              <div class="field">
+                <label>Υποπεριοχή</label>
+                <div class="combobox"><input class="input" value="Θεσπρωτία"/></div>
+              </div>
+              <div class="field">
+                <label>Επί μέρους υποπ.</label>
+                <div class="combobox"><input class="input" placeholder="—"/></div>
+              </div>
+              <div class="field">
+                <label>Νησί</label>
+                <div class="combobox"><input class="input" placeholder="—"/></div>
+              </div>
+              <div class="field">
+                <label>Χωριό</label>
+                <div class="combobox"><input class="input" value="Φιλιππιάδα"/></div>
+              </div>
+              <div class="field">
+                <label>Γλώσσα(ες)</label>
+                <div class="combobox"><input class="input" value="Ελληνικά"/></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Music -->
+          <div class="form-group">
+            <h3>Μουσικά στοιχεία</h3>
+            <div class="two-col">
+              <div class="field">
+                <label>Ρυθμός</label>
+                <div class="combobox"><input class="input" value="Τρεχάτος"/></div>
+                <span class="hint">Συνδέεται με το παράρτημα <a href="#" class="link">Ρυθμός τρεχάτος</a>.</span>
+              </div>
+              <div class="field">
+                <label>Χορός</label>
+                <div class="combobox"><input class="input" placeholder="—"/></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div class="form-group">
+            <h3>Κατηγορίες</h3>
+            <p class="hint">Έως τρεις, με σειρά προτεραιότητας. Η πρώτη κατηγορία εμφανίζεται ως κύρια στη δημόσια λίστα.</p>
+            <div class="three-col">
+              <div class="category-slot">
+                <div class="slot-label">Πρωτεύουσα</div>
+                <div class="combobox"><input class="input" value="Τραγούδι της ξενιτιάς"/></div>
+              </div>
+              <div class="category-slot">
+                <div class="slot-label">Δευτερεύουσα</div>
+                <div class="combobox"><input class="input" value="Γαμήλιο"/></div>
+              </div>
+              <div class="category-slot">
+                <div class="slot-label">Τριτεύουσα</div>
+                <div class="combobox"><input class="input" placeholder="—"/></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Texts -->
+          <div class="form-group">
+            <h3>Περιγραφή</h3>
+            <p class="hint">Markdown, επιτρέπονται: παράγραφοι, έμφαση, σύνδεσμοι, λίστες. Δεν επιτρέπεται HTML.</p>
+            <div class="markdown-ed">
+              <div class="toolbar">
+                <button title="Έντονο">B</button>
+                <button title="Πλάγιο"><em>I</em></button>
+                <button title="Σύνδεσμος">⎘</button>
+                <button title="Λίστα">•≡</button>
+                <button title="Παράθεση">❝</button>
+                <button title="Προεπισκόπηση" style="margin-left:auto;">⟐</button>
+              </div>
+              <textarea rows="5">Ένα από τα πιο χαρακτηριστικά τραγούδια της ξενιτιάς στη Θεσπρωτία, το «Μπρυσούδα μου τριχαμνιά» καταγράφηκε για πρώτη φορά στις αρχές του 20ού αιώνα...</textarea>
+              <div class="wc"><span>342 / ~2000 χαρακτ.</span><span>Markdown</span></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <h3>Στίχοι</h3>
+            <p class="hint">Κεντραρισμένοι στη δημόσια σελίδα. Κενή γραμμή = νέα στροφή.</p>
+            <div class="markdown-ed">
+              <div class="toolbar">
+                <button title="Έντονο">B</button>
+                <button title="Πλάγιο"><em>I</em></button>
+                <button title="Κενή γραμμή">↵</button>
+              </div>
+              <textarea rows="8">Μπρυσούδα μου τριχαμνιά,
+μαρμαροχτισμένη,
+π' όλοι σ' αγαπάν οι ξένοι,
+π' όλοι σ' αγαπάν.
+
+Κι' εγώ π' είμ' ο πιο δικός σου,
+πάω στα ξένα κι αρνιέμαι...</textarea>
+              <div class="wc"><span>4 στροφές · 16 γραμμές</span><span>Markdown</span></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <h3>Σχόλια</h3>
+            <div class="markdown-ed">
+              <div class="toolbar"><button>B</button><button><em>I</em></button></div>
+              <textarea rows="3" placeholder="Επεξηγήσεις στίχων, γλωσσικές σημειώσεις..."><em>Τριχαμνιά</em>: τοπικός όρος για την πηγή με λεπτή ροή νερού...</textarea>
+            </div>
+          </div>
+
+          <!-- Sources -->
+          <div class="form-group">
+            <h3>Πηγές πληροφορίας</h3>
+            <ul class="sources-list">
+              <li>
+                <span class="kind">Βιβλιογραφία</span>
+                <span class="val">Σπύρου, Ε. (2019). <em>Τραγούδια της Ξενιτιάς στη Θεσπρωτία.</em> Αθήνα: Ε.Κ.Π.Α.</span>
+                <button class="btn btn--ghost btn--sm">Επεξ.</button>
+              </li>
+              <li>
+                <span class="kind">Σύνδεσμος</span>
+                <span class="val"><a href="#">archive.uoa.gr/songs/epe-ths-001</a> · πρόσβαση 2026-04-20</span>
+                <button class="btn btn--ghost btn--sm">Επεξ.</button>
+              </li>
+              <li>
+                <span class="kind">Προφορική</span>
+                <span class="val">Μ. Ζαρμπαλά (85), Φιλιππιάδα, Ιούνιος 2018</span>
+                <button class="btn btn--ghost btn--sm">Επεξ.</button>
+              </li>
+            </ul>
+            <button class="btn btn--ghost btn--sm" style="margin-top: var(--space-2);">+ Προσθήκη πηγής</button>
+          </div>
+
+          <!-- Audio -->
+          <div class="form-group">
+            <h3>Ηχητικό αρχείο</h3>
+            <div class="two-col">
+              <div>
+                <div class="audio-dropzone">
+                  <strong>Ήχος ανέβηκε ✓</strong>
+                  <p>EPE-THS-001.mp3 · 3.4 MB · 128 kbps · 2:34</p>
+                  <div style="margin-top: var(--space-2); display: flex; gap: var(--space-1); justify-content: center;">
+                    <button class="btn btn--sm btn--ghost">Αντικατάσταση</button>
+                    <button class="btn btn--sm btn--ghost">Αφαίρεση</button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="field">
+                  <label>Άδεια χρήσης *</label>
+                  <select class="select">
+                    <option>— Επιλέξτε άδεια —</option>
+                    <option>Κοινό κτήμα</option>
+                    <option selected>CC BY-NC 4.0</option>
+                    <option>CC BY 4.0</option>
+                    <option>Με επιφύλαξη δικαιωμάτων</option>
+                    <option>Εκκρεμεί (δεν προβάλλεται)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Αναφορά</label>
+                  <input class="input" value="Ε. Σπύρου / Ε.Κ.Π.Α."/>
+                </div>
+                <div class="field">
+                  <label>Πηγή ηχογράφησης</label>
+                  <input class="input" value="Συλλογή Ν. Παπαδόπουλου, 1987"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cross-references -->
+          <div class="form-group">
+            <h3>Παραπομπές σε άλλα τραγούδια</h3>
+            <ul class="sources-list">
+              <li>
+                <span class="kind">Μελωδικά</span>
+                <span class="val"><a href="#">Καραγιαννίνα</a> — κοινή μελωδική γραμμή στις στροφές 1–2</span>
+                <button class="btn btn--ghost btn--sm">×</button>
+              </li>
+              <li>
+                <span class="kind">Στίχοι</span>
+                <span class="val"><a href="#">Βρύση μου πετροκαμάρι</a> (Κιλκίς) — παράλληλες εικόνες</span>
+                <button class="btn btn--ghost btn--sm">×</button>
+              </li>
+              <li>
+                <span class="kind">Θεματικά</span>
+                <span class="val"><a href="#">Μαλάμω</a> (Ρούμελη) · <a href="#">Μαρούσα</a> (Κέα)</span>
+                <button class="btn btn--ghost btn--sm">×</button>
+              </li>
+            </ul>
+            <div class="xref-picker" style="margin-top: var(--space-2);">
+              <label class="label-tracked">Προσθήκη παραπομπής</label>
+              <div class="three-col mt-2">
+                <div class="combobox"><input class="input" placeholder="Αναζήτηση τραγουδιού…"/></div>
+                <select class="select">
+                  <option>Τύπος: Μελωδική</option>
+                  <option>Ρυθμική</option>
+                  <option>Στιχουργική</option>
+                  <option>Θεματική</option>
+                </select>
+                <button class="btn btn--sm">Προσθήκη</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="side-meta">
+          <div class="label-tracked">Κατάσταση</div>
+          <dl class="mt-2">
+            <dt>Κωδικός</dt><dd class="tabular">EPE-THS-001</dd>
+            <dt>Έκδοση</dt><dd class="tabular">4</dd>
+            <dt>Δημιουργία</dt><dd class="tabular">2026-03-18</dd>
+            <dt>Ενημέρωση</dt><dd class="tabular">πριν 12′</dd>
+            <dt>Συντάκτης</dt><dd>Ε.Σ.</dd>
+            <dt>Ηχητικό</dt><dd style="color: var(--ink);">✓ CC BY-NC 4.0</dd>
+            <dt>Δημόσιο</dt><dd style="color: var(--ink);">ναι</dd>
+          </dl>
+
+          <div class="save-row">
+            <button class="btn btn--primary">Αποθήκευση</button>
+            <button class="btn btn--ghost">Ακύρωση</button>
+            <p class="meta" style="text-align: center; margin-top: 4px;">Ctrl+S</p>
+          </div>
+
+          <div class="danger-zone">
+            <div class="label-tracked" style="color: #a33; margin-bottom: 6px;">Προσοχή</div>
+            <button>Διαγραφή τραγουδιού…</button>
+            <p class="meta" style="margin-top: 6px; font-size: 10px;">Θα ζητηθεί πληκτρολόγηση κωδικού για επιβεβαίωση.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="wireframe-badge">ΣΚΑΡΙΦΗΜΑ · /admin/songs/[id]</div>
+</body>
+</html>

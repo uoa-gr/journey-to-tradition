@@ -1,0 +1,27 @@
+sequenceDiagram
+  autonumber
+  actor V as Visitor
+  participant B as Browser<br/>(Leaflet)
+  participant RH as Route Handler<br/>/api/geo/regions
+  participant DB as Postgres + PostGIS
+  participant CDN as Vercel edge cache
+
+  V->>B: Load /
+  B->>CDN: GET /api/geo/regions
+  alt cache HIT
+    CDN-->>B: FeatureCollection (cached)
+  else cache MISS
+    CDN->>RH: GET /api/geo/regions
+    RH->>DB: supabase.rpc('regions_geojson')
+    DB->>DB: SELECT jsonb_build_object(...)<br/>FROM regions<br/>(uses GIST on geom)
+    DB-->>RH: FeatureCollection
+    RH-->>CDN: 200 + Cache-Control:<br/>s-maxage=3600, SWR=86400
+    CDN-->>B: FeatureCollection
+  end
+  B->>B: L.geoJSON(fc).addTo(map)
+
+  Note over B,CDN: On admin edit:<br/>Server Action calls revalidateTag('geo:regions')<br/>→ next request rebuilds cache.
+
+  rect rgba(250,248,242,0.8)
+    Note right of B: For villages (potentially 1000s):<br/>option A — same GeoJSON pipeline +<br/>Leaflet.markercluster<br/>option B — MVT tiles via ST_AsMVT +<br/>Leaflet.VectorGrid<br/>(decided in Phase 4 after profiling)
+  end

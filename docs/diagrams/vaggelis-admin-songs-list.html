@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8"/>
+  <title>Λίστα τραγουδιών — Admin</title>
+  <link rel="stylesheet" href="_wireframe.css"/>
+  <style>
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      align-items: center;
+    }
+    .filter-bar {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      background: var(--paper);
+      border: 1px solid var(--fog);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .filter-bar select, .filter-bar .combobox input {
+      font-size: var(--text-xs);
+      padding: 6px 24px 6px 10px;
+      min-width: 140px;
+      border: 1px solid var(--fog);
+    }
+    .filter-bar .reset {
+      font-size: var(--text-xs);
+      color: var(--ash);
+      align-self: center;
+      margin-left: auto;
+      text-decoration: underline;
+      text-decoration-color: var(--mist);
+      cursor: pointer;
+    }
+    .active-facets {
+      display: flex;
+      gap: 6px;
+      font-size: var(--text-xs);
+      color: var(--stone);
+      margin-bottom: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .active-facets .facet {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      padding: 2px 8px;
+      background: var(--white);
+      border: 1px solid var(--charcoal);
+      font-size: var(--text-2xs);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .active-facets .facet button {
+      border: none;
+      background: transparent;
+      color: var(--stone);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0 0 0 2px;
+    }
+    .bulk-row {
+      display: none;
+      padding: var(--space-2);
+      background: var(--haze);
+      border: 1px solid var(--charcoal);
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+    .bulk-row.visible { display: flex; }
+    .bulk-row .count {
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-3) 0;
+      font-size: var(--text-sm);
+      color: var(--stone);
+    }
+    .pagination .pages {
+      display: flex;
+      gap: 6px;
+    }
+    .pagination .pages a, .pagination .pages span {
+      padding: 4px 10px;
+      border: 1px solid var(--fog);
+      color: var(--stone);
+      text-decoration: none;
+      font-variant-numeric: tabular-nums;
+    }
+    .pagination .pages a[aria-current="page"] {
+      background: var(--ink);
+      color: var(--white);
+      border-color: var(--ink);
+    }
+    .datatable tbody td.title-cell a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .datatable tbody td.title-cell a:hover { text-decoration: underline; }
+    .datatable tbody td.title-cell em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--stone);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .datatable .statuses {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <aside>
+      <div style="padding: 0 var(--space-3) var(--space-3); font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: var(--text-lg); color: var(--ink); border-bottom: 1px solid var(--fog); margin-bottom: var(--space-2);">
+        Ταξίδι στην Παράδοση
+        <div class="label-tracked" style="margin-top: 6px; color: var(--ash); font-style: normal; font-family: var(--font-sans); letter-spacing: 0.2em;">Διαχείριση</div>
+      </div>
+      <ul class="adminnav">
+        <li><a href="vaggelis-admin-dashboard.html">Ταμπλό</a></li>
+        <li><span class="group">Περιεχόμενο</span></li>
+        <li><a href="vaggelis-admin-songs-list.html" aria-current="page">Τραγούδια</a></li>
+        <li><a href="#">Κατηγορίες</a></li>
+        <li><a href="#">Ρυθμοί</a></li>
+        <li><a href="#">Χοροί</a></li>
+        <li><a href="#">Γλώσσες</a></li>
+        <li><a href="#">Παραρτήματα</a></li>
+        <li><span class="group">Γεωγραφία</span></li>
+        <li><a href="vaggelis-admin-region-editor.html">Περιοχές</a></li>
+        <li><a href="#">Υποπεριοχές</a></li>
+        <li><a href="#">Νησιά</a></li>
+        <li><a href="#">Χωριά</a></li>
+        <li><span class="group">Εργαλεία</span></li>
+        <li><a href="#">Εισαγωγή XLSX</a></li>
+        <li><a href="#">Ιστορικό αλλαγών</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <header class="admin-header">
+        <div>
+          <h1>Τραγούδια</h1>
+          <p class="meta" style="margin-top: 4px;">287 συνολικά · 164 με ήχο · τελευταία ενημέρωση πριν 12′</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn--ghost" href="#">Εισαγωγή XLSX</a>
+          <a class="btn btn--ghost" href="#">Εξαγωγή CSV</a>
+          <a class="btn btn--primary" href="vaggelis-admin-song-edit.html">+ Νέο τραγούδι</a>
+        </div>
+      </header>
+
+      <div class="toolbar">
+        <div class="searchfield" role="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/></svg>
+          <input type="search" placeholder="Αναζήτηση σε τίτλο, στίχους, περιγραφή…" value="βρυσούδα"/>
+        </div>
+        <span class="meta">Εύρος:</span>
+        <select class="select" style="max-width: 160px;">
+          <option>Όλα τα πεδία</option>
+          <option>Στίχοι</option>
+          <option>Περιγραφή</option>
+          <option>Σχόλια</option>
+        </select>
+        <label class="meta" style="display:flex; gap: 4px; align-items: center;">
+          <input type="checkbox" checked/> ασαφή διακριτικά
+        </label>
+      </div>
+
+      <div class="filter-bar">
+        <select class="select"><option>Περιοχή: όλες</option><option>Ήπειρος</option><option selected>Ήπειρος</option></select>
+        <div class="combobox"><input class="input" placeholder="Υποπεριοχή…" value="Θεσπρωτία" style="min-width: 140px;"/></div>
+        <div class="combobox"><input class="input" placeholder="Κατηγορία…" style="min-width: 140px;"/></div>
+        <div class="combobox"><input class="input" placeholder="Ρυθμός…" value="Τρεχάτος" style="min-width: 140px;"/></div>
+        <div class="combobox"><input class="input" placeholder="Χορός…" style="min-width: 120px;"/></div>
+        <select class="select"><option>Γλώσσα: όλες</option><option>Ελληνικά</option></select>
+        <span class="reset">Καθαρισμός</span>
+      </div>
+
+      <div class="active-facets">
+        <span class="meta">Ενεργά φίλτρα:</span>
+        <span class="facet">Περιοχή: Ήπειρος <button aria-label="Αφαίρεση">×</button></span>
+        <span class="facet">Υποπερ.: Θεσπρωτία <button aria-label="Αφαίρεση">×</button></span>
+        <span class="facet">Ρυθμός: Τρεχάτος <button aria-label="Αφαίρεση">×</button></span>
+        <span class="facet">Αναζήτ.: "βρυσούδα" <button aria-label="Αφαίρεση">×</button></span>
+      </div>
+
+      <div class="bulk-row visible" role="status">
+        <span class="count">3</span>
+        <span>επιλεγμένα</span>
+        <a class="btn btn--sm btn--ghost" href="#">Προσθήκη κατηγορίας</a>
+        <a class="btn btn--sm btn--ghost" href="#">Αλλαγή άδειας</a>
+        <a class="btn btn--sm btn--ghost" href="#">Εξαγωγή</a>
+        <a class="btn btn--sm" href="#" style="margin-left: auto; border-color: #c44;">Διαγραφή</a>
+      </div>
+
+      <table class="datatable">
+        <colgroup>
+          <col style="width: 30px;"/>
+          <col style="width: 130px;"/>
+          <col/>
+          <col style="width: 140px;"/>
+          <col style="width: 140px;"/>
+          <col style="width: 100px;"/>
+          <col style="width: 90px;"/>
+          <col style="width: 120px;"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th><input type="checkbox" aria-label="Επιλογή όλων"/></th>
+            <th>Κωδικός</th>
+            <th>Τίτλος</th>
+            <th>Περιοχή · Υποπ.</th>
+            <th>Κατηγορία</th>
+            <th>Ρυθμός</th>
+            <th>Κατάσταση</th>
+            <th>Ενημέρωση</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox" checked/></td>
+            <td class="code">EPE-THS-001</td>
+            <td class="title-cell"><a href="vaggelis-admin-song-edit.html">Μπρυσούδα μου τριχαμνιά</a><em>[Βρύση μου πετροκαμάρι]</em></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>Τραγ. ξενιτιάς</td>
+            <td>Τρεχάτος</td>
+            <td class="statuses"><span class="dot dot--on" title="ήχος"></span><span class="dot dot--on" title="στίχοι"></span><span class="dot dot--on" title="κατηγορία"></span></td>
+            <td class="num">πριν 12′</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked/></td>
+            <td class="code">EPE-THS-002</td>
+            <td class="title-cell"><a href="#">Βρυσούδα στον κάμπο</a></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>Τραγ. ξενιτιάς</td>
+            <td>Τρεχάτος</td>
+            <td class="statuses"><span class="dot" title="χωρίς ήχο"></span><span class="dot dot--on"></span><span class="dot dot--on"></span></td>
+            <td class="num">χθες</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked/></td>
+            <td class="code">EPE-THS-013</td>
+            <td class="title-cell"><a href="#">Βρυσούδα του Σουλίου</a></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>—</td>
+            <td>Τρεχάτος</td>
+            <td class="statuses"><span class="dot" title="χωρίς ήχο"></span><span class="dot dot--on"></span><span class="dot" title="χωρίς κατηγορία"></span></td>
+            <td class="num">χθες</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"/></td>
+            <td class="code">EPE-THS-007</td>
+            <td class="title-cell"><a href="#">Ηπειρώτικη βρύση</a><em>[Η βρύση του Γιάννη]</em></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>Νανούρισμα</td>
+            <td>Τρεχάτος</td>
+            <td class="statuses"><span class="dot dot--on"></span><span class="dot dot--on"></span><span class="dot dot--on"></span></td>
+            <td class="num">3 ημ.</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"/></td>
+            <td class="code">EPE-THS-009</td>
+            <td class="title-cell"><a href="#">Τραγούδι της ξενιτιάς</a></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>Τραγ. ξενιτιάς</td>
+            <td>Συρτός</td>
+            <td class="statuses"><span class="dot" title="χωρίς ήχο"></span><span class="dot dot--on"></span><span class="dot dot--on"></span></td>
+            <td class="num">5 ημ.</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"/></td>
+            <td class="code">EPE-THS-011</td>
+            <td class="title-cell"><a href="#">Μην παίρνεις ξένο δρόμο</a></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>Τραγ. ξενιτιάς</td>
+            <td>Τρεχάτος</td>
+            <td class="statuses"><span class="dot dot--on"></span><span class="dot dot--on"></span><span class="dot dot--on"></span></td>
+            <td class="num">1 εβδ.</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"/></td>
+            <td class="code">EPE-THS-012</td>
+            <td class="title-cell"><a href="#">Στην πόρτα του Αλή</a></td>
+            <td>Ήπειρος · Θεσπρωτία</td>
+            <td>Ιστορικό</td>
+            <td>—</td>
+            <td class="statuses"><span class="dot" title="χωρίς ήχο"></span><span class="dot dot--on"></span><span class="dot dot--on"></span></td>
+            <td class="num">1 εβδ.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <span>Εμφάνιση 1–7 από 11 αποτελέσματα</span>
+        <div class="pages">
+          <a href="#">‹ Προηγ.</a>
+          <a href="#" aria-current="page">1</a>
+          <a href="#">2</a>
+          <a href="#">Επόμ. ›</a>
+        </div>
+        <span>Εγγραφές ανά σελίδα:
+          <select class="select" style="display: inline-block; width: 80px; padding: 2px 24px 2px 8px; font-size: var(--text-xs);">
+            <option>25</option><option>50</option><option>100</option>
+          </select>
+        </span>
+      </div>
+    </main>
+  </div>
+
+  <div class="wireframe-badge">ΣΚΑΡΙΦΗΜΑ · /admin/songs</div>
+</body>
+</html>

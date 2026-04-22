@@ -1,0 +1,8 @@
+flowchart LR
+  A["1<br/>Ανοίγω το<br/>τραγούδι<br/>στο admin"] --> B["2<br/>Σέρνω το<br/>αρχείο MP3<br/>στο πεδίο"]
+  B --> C["3<br/>Ανέβασμα<br/>στον server<br/>(βλέπω πρόοδο)"]
+  C --> D["4<br/>Σύνδεση<br/>με το τραγούδι<br/>στη βάση"]
+  D --> E["5<br/>Player<br/>εμφανίζεται<br/>για δοκιμή"]
+
+  classDef step fill:#fafaf5,stroke:#1a1a1a,stroke-width:1px,color:#1a1a1a
+  class A,B,C,D,E step

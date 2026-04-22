@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8"/>
+  <title>Μπρυσούδα μου τριχαμνιά — Ταξίδι στην Παράδοση</title>
+  <link rel="stylesheet" href="_wireframe.css"/>
+  <style>
+    .song-page {
+      max-width: 1100px;
+      margin: var(--space-4) auto var(--space-8);
+      padding: 0 var(--space-4);
+    }
+    .song-hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: var(--space-4);
+      padding-top: var(--space-6);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--fog);
+    }
+    .song-hero .code {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: var(--text-2xs);
+      letter-spacing: 0.18em;
+      color: var(--ash);
+      margin-bottom: var(--space-2);
+    }
+    .song-hero h1 {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1.05;
+    }
+    .song-hero h1 .alt {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--stone);
+      font-size: 0.7em;
+      display: block;
+      margin-top: 6px;
+      letter-spacing: -0.01em;
+    }
+    .song-hero .meta-col {
+      font-size: var(--text-xs);
+      color: var(--ash);
+      text-align: right;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .song-hero .meta-col strong {
+      display: block;
+      font-weight: 500;
+      color: var(--stone);
+      letter-spacing: 0.06em;
+      text-transform: none;
+      font-size: var(--text-sm);
+      margin-top: 2px;
+    }
+    .song-grid {
+      margin-top: var(--space-5);
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: var(--space-6);
+    }
+    .song-grid h2 {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: var(--text-md);
+      color: var(--ink);
+      margin-bottom: var(--space-2);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--fog);
+    }
+    .lyrics-wrap {
+      margin-top: var(--space-5);
+      padding: var(--space-5) var(--space-3);
+      background: var(--paper);
+      border-top: 1px solid var(--fog);
+      border-bottom: 1px solid var(--fog);
+    }
+    .audio-player {
+      border: 1px solid var(--charcoal);
+      padding: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+    .audio-player .play-btn {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .audio-player .play-btn::after {
+      content: "";
+      width: 10px; height: 12px;
+      background: var(--white);
+      clip-path: polygon(20% 0, 100% 50%, 20% 100%);
+    }
+    .audio-player .scrub {
+      flex: 1;
+      height: 2px;
+      background: var(--fog);
+      position: relative;
+    }
+    .audio-player .scrub::after {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 34%;
+      background: var(--ink);
+    }
+    .audio-player .time {
+      font-variant-numeric: tabular-nums;
+      font-size: var(--text-xs);
+      color: var(--stone);
+      letter-spacing: 0.04em;
+    }
+    .side-list {
+      list-style: none;
+      font-size: var(--text-sm);
+    }
+    .side-list li {
+      padding: 10px 0;
+      border-bottom: 1px dotted var(--fog);
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+    .side-list li:last-child { border-bottom: none; }
+    .side-list .k { color: var(--ash); letter-spacing: 0.04em; }
+    .side-list .v { color: var(--charcoal); text-align: right; }
+    .side-list .v a { color: var(--charcoal); text-decoration-color: var(--mist); }
+    .xrefs-list {
+      list-style: none;
+      margin-top: var(--space-2);
+    }
+    .xrefs-list li {
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--fog);
+    }
+    .xrefs-list li:last-child { border-bottom: none; }
+    .xrefs-list a { display: block; text-decoration: none; color: inherit; }
+    .xrefs-list .x-title {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: var(--text-md);
+      color: var(--ink);
+    }
+    .xrefs-list .x-rel {
+      font-size: var(--text-xs);
+      color: var(--ash);
+      font-style: italic;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+    .xrefs-list li:hover { background: var(--paper); padding-left: 8px; transition: padding 0.15s ease; }
+    .footer-citation {
+      margin-top: var(--space-6);
+      padding-top: var(--space-3);
+      border-top: 1px dotted var(--fog);
+      font-size: var(--text-xs);
+      color: var(--ash);
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .footer-citation strong {
+      display: block;
+      color: var(--stone);
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      font-size: var(--text-2xs);
+    }
+    @media (max-width: 820px) {
+      .song-grid { grid-template-columns: 1fr; }
+      .song-hero { grid-template-columns: 1fr; }
+      .song-hero .meta-col { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topstrip">
+    <div class="brand">Ταξίδι στην Παράδοση <small>WebGIS</small></div>
+    <nav>
+      <a href="vaggelis-layout.html">Χάρτης</a>
+      <a href="vaggelis-editorial.html">Σχετικά</a>
+      <a href="vaggelis-editorial.html">Μέθοδοι</a>
+      <a href="vaggelis-editorial.html">Πηγές</a>
+      <a href="vaggelis-editorial.html">Ευχαριστίες</a>
+    </nav>
+  </header>
+
+  <article class="song-page">
+    <nav class="meta" style="margin-top: var(--space-3);">
+      <a href="vaggelis-layout.html" class="link">Χάρτης</a>
+      <span style="color: var(--mist); margin: 0 8px;">›</span>
+      <a href="#" class="link">Ήπειρος</a>
+      <span style="color: var(--mist); margin: 0 8px;">›</span>
+      <a href="#" class="link">Θεσπρωτία</a>
+      <span style="color: var(--mist); margin: 0 8px;">›</span>
+      <span style="color: var(--stone);">Μπρυσούδα μου τριχαμνιά</span>
+    </nav>
+
+    <header class="song-hero">
+      <div>
+        <div class="code">EPE-THS-001</div>
+        <h1>
+          Μπρυσούδα μου τριχαμνιά
+          <span class="alt">[Βρύση μου πετροκαμάρι]</span>
+        </h1>
+      </div>
+      <div class="meta-col">
+        <span>Ήπειρος</span>
+        <strong>Θεσπρωτία</strong>
+      </div>
+    </header>
+
+    <section class="song-grid">
+      <div>
+        <h2>Περιγραφή</h2>
+        <div class="prose stack-2">
+          <p>Ένα από τα πιο χαρακτηριστικά τραγούδια της ξενιτιάς στη Θεσπρωτία, το «Μπρυσούδα μου τριχαμνιά» καταγράφηκε για πρώτη φορά στις αρχές του 20ού αιώνα από τοπικούς λογίους. Η μελωδία του, σε ρυθμό τρεχάτο, μοιράζεται κοινά στοιχεία με μεταγενέστερες παραλλαγές της Ρούμελης.</p>
+          <p>Οι στίχοι αναφέρονται στη θλίψη του χωρισμού και στη φιγούρα της πηγής ως συμβόλου της πατρίδας — μοτίβο που επανέρχεται σε πολλά ηπειρώτικα τραγούδια της ίδιας περιόδου.</p>
+          <p>Η παρούσα καταγραφή προέρχεται από συλλογή του <a href="#">Ε. Σπύρου (2019)</a> και συμπληρώθηκε με προφορικές μαρτυρίες από το χωριό Φιλιππιάδα.</p>
+        </div>
+
+        <h2 style="margin-top: var(--space-5);">Ήχος</h2>
+        <div class="audio-player" aria-label="Αναπαραγωγή ηχητικού">
+          <span class="play-btn" role="button" aria-label="Αναπαραγωγή"></span>
+          <span class="scrub"></span>
+          <span class="time">0:52 / 2:34</span>
+        </div>
+        <div class="meta" style="margin-top: 6px;">
+          Καταγραφή: Ν. Παπαδόπουλος, 1987 · MP3, 128 kbps · CC BY-NC 4.0
+        </div>
+
+        <div class="lyrics-wrap">
+          <h2 style="border: none; margin-bottom: var(--space-3); text-align: center;">Στίχοι</h2>
+          <div class="lyrics">
+            <p>
+              Μπρυσούδα μου τριχαμνιά,<br/>
+              μαρμαροχτισμένη,<br/>
+              π' όλοι σ' αγαπάν οι ξένοι,<br/>
+              π' όλοι σ' αγαπάν.
+            </p>
+            <p>
+              Κι' εγώ π' είμ' ο πιο δικός σου,<br/>
+              πάω στα ξένα κι αρνιέμαι<br/>
+              το νερό σου να πιώ,<br/>
+              τ' όνομά σου να ειπώ.
+            </p>
+          </div>
+        </div>
+
+        <h2 style="margin-top: var(--space-5);">Σχόλια</h2>
+        <div class="prose">
+          <p><em>Τριχαμνιά</em>: τοπικός όρος για την πηγή με λεπτή ροή νερού μέσω φυτικής ύλης. <em>Μαρμαροχτισμένη</em>: πετροκτισμένη με σκαλιστό μάρμαρο — συνήθης εικόνα στις ηπειρώτικες πηγές του 19ου αιώνα.</p>
+        </div>
+      </div>
+
+      <aside class="stack-4">
+        <section>
+          <h2>Ιδιότητες</h2>
+          <ul class="side-list">
+            <li><span class="k">Περιοχή</span><span class="v">Ήπειρος</span></li>
+            <li><span class="k">Υποπεριοχή</span><span class="v">Θεσπρωτία</span></li>
+            <li><span class="k">Χωριό</span><span class="v">Φιλιππιάδα</span></li>
+            <li><span class="k">Κατηγορία</span><span class="v">Τραγούδι της ξενιτιάς</span></li>
+            <li><span class="k">Ρυθμός</span><span class="v"><a href="#">Τρεχάτος</a></span></li>
+            <li><span class="k">Χορός</span><span class="v">—</span></li>
+            <li><span class="k">Γλώσσα</span><span class="v">Ελληνικά</span></li>
+            <li><span class="k">Καταγραφή</span><span class="v">Ν. Παπαδόπουλος</span></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Πηγές</h2>
+          <ul class="side-list">
+            <li style="display:block;">
+              <span class="label-tracked">Βιβλιογραφία</span><br/>
+              <span class="v" style="text-align:left; font-style: italic; margin-top: 4px; display: block;">Σπύρου, Ε. (2019). <em>Τραγούδια της Ξενιτιάς στη Θεσπρωτία.</em> Αθήνα: Ε.Κ.Π.Α.</span>
+            </li>
+            <li style="display:block;">
+              <span class="label-tracked">Σύνδεσμος</span><br/>
+              <a href="#" class="v" style="text-align:left; margin-top: 4px; display: block;">archive.uoa.gr/songs/epe-ths-001</a>
+              <span class="meta">Πρόσβαση: 20 Απριλίου 2026</span>
+            </li>
+            <li style="display:block;">
+              <span class="label-tracked">Προφορική</span><br/>
+              <span class="v" style="text-align:left; margin-top: 4px; display: block; color: var(--stone);">Αφηγήτρια: Μ. Ζαρμπαλά (85 ετών), Φιλιππιάδα, 2018</span>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Παραπομπές</h2>
+          <ul class="xrefs-list">
+            <li><a href="#">
+              <div class="x-title">Καραγιαννίνα</div>
+              <div class="x-rel">Παρόμοια μελωδία · ρυθμική συγγένεια</div>
+            </a></li>
+            <li><a href="#">
+              <div class="x-title">Βρύση μου πετροκαμάρι</div>
+              <div class="x-rel">Κιλκίς — παράλληλο θέμα</div>
+            </a></li>
+            <li><a href="#">
+              <div class="x-title">Μαλάμω</div>
+              <div class="x-rel">Ρούμελη — θεματική συγγένεια</div>
+            </a></li>
+            <li><a href="#">
+              <div class="x-title">Μαρούσα</div>
+              <div class="x-rel">Κέα — θεματική συγγένεια</div>
+            </a></li>
+          </ul>
+        </section>
+      </aside>
+    </section>
+
+    <div class="footer-citation">
+      <strong>Παραπομπή</strong>
+      Σπύρου, Ε. (2026). <em>Μπρυσούδα μου τριχαμνιά</em> [EPE-THS-001]. Στο <em>Ταξίδι στην Παράδοση: WebGIS Ελληνικών Μουσικών Παραδόσεων</em>. Ε.Κ.Π.Α. Ανακτήθηκε 22 Απριλίου 2026, από journey-to-tradition.gr/songs/EPE-THS-001.
+    </div>
+  </article>
+
+  <div class="wireframe-badge">ΣΚΑΡΙΦΗΜΑ · song detail</div>
+</body>
+</html>

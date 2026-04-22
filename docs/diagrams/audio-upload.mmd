@@ -1,0 +1,31 @@
+sequenceDiagram
+  autonumber
+  actor U as Vaggelis
+  participant C as Client<br/>(edit song form)
+  participant SA as Server Action<br/>(Node runtime · secret key)
+  participant ST as Supabase Storage<br/>(audio bucket)
+  participant DB as Postgres (songs, edits)
+
+  U->>C: Drop MP3 onto dropzone
+  C->>C: Validate MIME + size (≤15 MB)
+  C->>SA: createSignedAudioUpload({ song_id, size, type })<br/>(NOT filename)
+  SA->>SA: requireRole('admin') + assertSameOrigin(headers())
+  SA->>DB: SELECT r.code, s.code FROM songs s<br/>JOIN regions r ON ... WHERE s.id = $song_id
+  DB-->>SA: { region_code, song_code }
+  SA->>SA: path = region_code + '/' + song_code + '.' + ext
+  SA->>ST: storage.createSignedUploadUrl(path) [secret key]
+  ST-->>SA: { signedUrl, token }
+  SA-->>C: { signedUrl, path }
+  C->>ST: PUT signedUrl (file bytes)
+  ST-->>C: 200 OK
+  C->>SA: attachAudioToSong({ song_id, path })
+  SA->>SA: requireRole + verify path matches signed path (replay guard)
+  SA->>DB: UPDATE songs SET audio_path=$1, version=version+1,<br/>updated_at=now() WHERE id=$2 AND version=$expected
+  DB-->>SA: ok
+  SA->>DB: INSERT INTO edits(actor, action, entity_type, entity_id,<br/>diff, ip_hash, user_agent, ...)
+  DB-->>SA: ok
+  SA->>SA: updateTag('song:'+code) + revalidateTag('geo:songs','max')
+  SA-->>C: success
+  C-->>U: show player preview
+
+  Note over SA,ST: Secret key NEVER leaves the server.<br/>Client never chooses path.

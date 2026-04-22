@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8"/>
+  <title>Σχετικά — Ταξίδι στην Παράδοση</title>
+  <link rel="stylesheet" href="_wireframe.css"/>
+  <style>
+    .edit-shell {
+      max-width: 820px;
+      margin: var(--space-6) auto var(--space-10);
+      padding: 0 var(--space-4);
+    }
+    .edit-eyebrow {
+      display: block;
+      margin-bottom: var(--space-3);
+    }
+    .edit-title {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .edit-title em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--charcoal);
+    }
+    .edit-lede {
+      margin-top: var(--space-3);
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.15rem, 0.5vw + 1rem, 1.5rem);
+      line-height: 1.45;
+      color: var(--charcoal);
+      max-width: 46ch;
+    }
+    .divider {
+      margin: var(--space-5) 0 var(--space-4);
+      border-top: 1px solid var(--fog);
+    }
+    .chap {
+      margin-top: var(--space-6);
+    }
+    .chap-head {
+      display: grid;
+      grid-template-columns: 4rem 1fr auto;
+      column-gap: var(--space-4);
+      align-items: baseline;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px dotted var(--mist);
+      margin-bottom: var(--space-3);
+    }
+    .chap-num {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(2rem, 2vw + 1rem, 2.6rem);
+      color: var(--ash);
+      font-variant-numeric: tabular-nums;
+    }
+    .chap-title {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: clamp(1.6rem, 2vw + 1rem, 2rem);
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .chap .meta {
+      color: var(--ash);
+      font-size: var(--text-2xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .chap p {
+      font-size: var(--text-base);
+      line-height: var(--leading-relaxed);
+      color: var(--slate);
+      max-width: 68ch;
+    }
+    .chap p + p { margin-top: var(--space-2); }
+    .chap ul {
+      margin-top: var(--space-2);
+      padding-left: 1.2em;
+      color: var(--slate);
+    }
+    .chap ul li { margin-bottom: 6px; }
+    .sidenote {
+      border-left: 2px solid var(--fog);
+      padding: var(--space-2) var(--space-3);
+      margin: var(--space-3) 0;
+      font-size: var(--text-sm);
+      color: var(--stone);
+      background: var(--paper);
+    }
+    .footnotes {
+      margin-top: var(--space-6);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--fog);
+      font-size: var(--text-xs);
+      color: var(--stone);
+      line-height: 1.7;
+    }
+    .footnotes ol { padding-left: 1.4em; }
+    .footnotes li { margin-bottom: 6px; }
+    .colophon {
+      margin-top: var(--space-8);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--fog);
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ash);
+      text-align: center;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <header class="topstrip">
+    <div class="brand">Ταξίδι στην Παράδοση <small>WebGIS</small></div>
+    <nav>
+      <a href="vaggelis-layout.html">Χάρτης</a>
+      <a href="#" aria-current="page">Σχετικά</a>
+      <a href="#">Μέθοδοι</a>
+      <a href="#">Πηγές</a>
+      <a href="#">Ευχαριστίες</a>
+    </nav>
+  </header>
+
+  <article class="edit-shell">
+    <span class="label-tracked edit-eyebrow">Επιστολή · Δοκίμιο</span>
+    <h1 class="edit-title">Μια χαρτογράφηση <em>των φωνών</em> της Ελλάδας</h1>
+    <p class="edit-lede">
+      Το αρχείο «Ταξίδι στην Παράδοση» συγκεντρώνει τραγούδια από δέκα γεωγραφικές ενότητες — ηχητικά τεκμήρια, στίχοι, παραπομπές — σε έναν ενιαίο χάρτη προσβάσιμο σε ερευνητές, μελετητές και το ευρύ κοινό.
+    </p>
+
+    <div class="divider"></div>
+
+    <section class="chap">
+      <header class="chap-head">
+        <span class="chap-num">I</span>
+        <h2 class="chap-title">Σκοπός</h2>
+        <span class="meta">§ 1</span>
+      </header>
+      <p>Το έργο ξεκίνησε τον Απρίλιο 2026 με στόχο τη συστηματική ψηφιακή καταγραφή των μουσικών παραδόσεων της ελλαδικής επικράτειας. Η ανάγκη γεννήθηκε από την παρατήρηση ότι σημαντικό υλικό παραμένει διάσπαρτο σε ιδιωτικές συλλογές, τοπικά αρχεία και προφορικές μαρτυρίες που απειλούνται με απώλεια.</p>
+      <p>Η WebGIS προσέγγιση επιτρέπει τη γεωγραφική πλαισίωση κάθε τραγουδιού — μια διάσταση που σπανίως αποτυπώνεται σε παραδοσιακές βιβλιογραφικές συλλογές.</p>
+
+      <aside class="sidenote">
+        Το αρχείο είναι <em>ζωντανό</em>: προσθήκες και διορθώσεις γίνονται συνεχώς από τον επιστημονικό υπεύθυνο. Κάθε τραγούδι έχει σταθερό κωδικό που επιτρέπει ακαδημαϊκή παραπομπή ακόμα και όταν περιεχόμενο επικαιροποιείται.
+      </aside>
+    </section>
+
+    <section class="chap">
+      <header class="chap-head">
+        <span class="chap-num">II</span>
+        <h2 class="chap-title">Κριτήρια συμπερίληψης</h2>
+        <span class="meta">§ 2</span>
+      </header>
+      <p>Για να ενταχθεί ένα τραγούδι στο αρχείο, απαιτείται:</p>
+      <ul>
+        <li>Σαφής γεωγραφική προέλευση ή καθιερωμένη συσχέτιση με μια περιοχή.</li>
+        <li>Καταγραφή στίχων και, όπου υπάρχει, ηχητική τεκμηρίωση.</li>
+        <li>Διασταυρούμενη αναφορά σε δύο τουλάχιστον ανεξάρτητες πηγές (βιβλιογραφικές ή προφορικές).</li>
+        <li>Διαθέσιμα δικαιώματα δημοσίευσης ή συγκατάθεση των φορέων δικαιωμάτων.</li>
+      </ul>
+      <p>Τραγούδια χωρίς εκκαθαρισμένα δικαιώματα εμφανίζονται στο αρχείο ως μεταδεδομένα μόνο — η αναπαραγωγή ήχου παραμένει κλειδωμένη μέχρι την εκκαθάριση.<sup><a href="#fn1">1</a></sup></p>
+    </section>
+
+    <section class="chap">
+      <header class="chap-head">
+        <span class="chap-num">III</span>
+        <h2 class="chap-title">Τι περιλαμβάνεται</h2>
+        <span class="meta">§ 3</span>
+      </header>
+      <p>Κάθε εγγραφή τραγουδιού περιέχει έως δεκατέσσερα πεδία: τίτλο και εναλλακτικό τίτλο, γεωγραφική τοποθέτηση σε πέντε βαθμίδες (περιοχή, υποπεριοχή, επί μέρους υποπεριοχή, νησί, χωριό), έως τρεις κατηγορίες, ρυθμό και χορό, περιγραφή, στίχους, σχόλια, πηγές και — το σπουδαιότερο — παραπομπές σε άλλα τραγούδια με κοινές μελωδίες, ρυθμούς, στίχους ή θέματα.</p>
+      <p>Οι παραπομπές σχηματίζουν ένα υπολανθάνον δίκτυο που αποκαλύπτει ανεπίσημες οικογένειες τραγουδιών κατά μήκος γεωγραφικών ενοτήτων — ιδιαίτερα ενδιαφέρον σε περιπτώσεις προσφυγικών παραδόσεων, όπου η γεωγραφική προέλευση του τραγουδιού αποκλίνει από τον σημερινό τόπο επιτέλεσής του.</p>
+    </section>
+
+    <section class="chap">
+      <header class="chap-head">
+        <span class="chap-num">IV</span>
+        <h2 class="chap-title">Άδειες χρήσης</h2>
+        <span class="meta">§ 4</span>
+      </header>
+      <p>Το σύνολο των μεταδεδομένων και των επιστημονικών σχολίων διατίθεται υπό άδεια <a href="#" class="link">Creative Commons Αναφορά – Μη Εμπορική 4.0</a> με αναφορά στον επιστημονικό υπεύθυνο και το Τμήμα Γεωλογίας του Ε.Κ.Π.Α. Οι άδειες χρήσης ηχητικών αρχείων ορίζονται χωριστά για κάθε τραγούδι και εμφανίζονται δίπλα στον player.</p>
+    </section>
+
+    <div class="footnotes">
+      <ol>
+        <li id="fn1">Η πολιτική εκκαθάρισης δικαιωμάτων περιγράφεται αναλυτικά στο <a href="#" class="link">Πολιτική Περιεχομένου</a>.</li>
+      </ol>
+    </div>
+
+    <div class="colophon">
+      Επιστημονικός υπεύθυνος: <strong style="font-style: normal; color: var(--stone);">Ευάγγελος Σπύρου</strong> · Τμήμα Γεωλογίας και Γεωπεριβάλλοντος, Ε.Κ.Π.Α.<br/>
+      Ανάπτυξη: Αλέξανδρος Π. Λιάσκος · Έκδοση 0.1 · Απρίλιος 2026
+    </div>
+  </article>
+
+  <div class="wireframe-badge">ΣΚΑΡΙΦΗΜΑ · editorial</div>
+</body>
+</html>

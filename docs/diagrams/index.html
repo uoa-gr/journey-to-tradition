@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8"/>
+  <title>Σκαριφήματα UI — Ταξίδι στην Παράδοση</title>
+  <link rel="stylesheet" href="_wireframe.css"/>
+  <style>
+    body { background: var(--paper); }
+    .hero {
+      max-width: 680px;
+      margin: var(--space-10) auto var(--space-6);
+      padding: 0 var(--space-4);
+    }
+    .hero .eyebrow {
+      display: block;
+      margin-bottom: var(--space-3);
+    }
+    .hero h1 {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .hero h1 em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+    .hero p {
+      margin-top: var(--space-3);
+      max-width: 58ch;
+      color: var(--slate);
+    }
+    .viewgrid {
+      max-width: 1180px;
+      margin: var(--space-6) auto var(--space-10);
+      padding: 0 var(--space-4);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-3);
+    }
+    .view {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      text-decoration: none;
+      color: inherit;
+      background: var(--white);
+      border: 1px solid var(--fog);
+      padding: var(--space-3);
+      gap: var(--space-2);
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .view:hover {
+      border-color: var(--charcoal);
+      transform: translateY(-1px);
+    }
+    .view .route {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: var(--text-2xs);
+      color: var(--ash);
+      letter-spacing: 0.04em;
+    }
+    .view h2 {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: var(--text-lg);
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .view p {
+      font-size: var(--text-sm);
+      color: var(--stone);
+      line-height: 1.5;
+    }
+    .view .tag {
+      margin-top: auto;
+      display: inline-block;
+      align-self: flex-start;
+    }
+    .section-label {
+      max-width: 1180px;
+      margin: var(--space-5) auto var(--space-2);
+      padding: 0 var(--space-4);
+      font-size: var(--text-2xs);
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--ash);
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+    }
+    .section-label::after {
+      content: "";
+      flex: 1;
+      border-top: 1px solid var(--fog);
+      margin-left: var(--space-2);
+    }
+    footer {
+      max-width: 1180px;
+      margin: 0 auto var(--space-6);
+      padding: var(--space-4);
+      border-top: 1px solid var(--fog);
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: var(--ash);
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <span class="label-tracked eyebrow">ΣΚΑΡΙΦΗΜΑΤΑ UI · v0.1 · 2026-04-22</span>
+    <h1>Ταξίδι <em>στην</em> Παράδοση</h1>
+    <p>Χαμηλής πιστότητας σκαριφήματα διεπαφής για έλεγχο πριν την υλοποίηση. Κάθε όψη είναι αυτόνομο αρχείο HTML που μπορείτε να ανοίξετε απευθείας. Κανονικό περιεχόμενο είναι ενδεικτικό (dummy data) — η πλήρης λίστα περιοχών, κατηγοριών και ρυθμών έρχεται από τον επιστημονικό υπεύθυνο.</p>
+  </section>
+
+  <div class="section-label">Δημόσιες σελίδες</div>
+  <div class="viewgrid">
+    <a class="view" href="vaggelis-layout.html">
+      <span class="route">/</span>
+      <h2>Αρχική σελίδα</h2>
+      <p>Τρεις στήλες: φίλτρα αριστερά, χάρτης στο κέντρο, πάνελ τραγουδιού δεξιά, παραρτήματα κάτω. Σύμφωνα με το σκαρίφημα σας.</p>
+      <span class="chip tag">Κύρια διάταξη</span>
+    </a>
+    <a class="view" href="vaggelis-song-detail.html">
+      <span class="route">/songs/[code]</span>
+      <h2>Σελίδα τραγουδιού</h2>
+      <p>Αυτόνομη όψη για μόνιμη παραπομπή: τίτλος, στίχοι (κεντραρισμένοι), ήχος, πηγές, παραπομπές σε άλλα τραγούδια.</p>
+      <span class="chip tag">Permalink</span>
+    </a>
+    <a class="view" href="vaggelis-editorial.html">
+      <span class="route">/about · /methods</span>
+      <h2>Επιστολή / Μέθοδοι</h2>
+      <p>Πρότυπο εκδοτικών σελίδων. Επικεφαλίδα μοτίβου, lede, σώμα κειμένου, υποσημειώσεις, rule-dotted.</p>
+      <span class="chip tag">Σύνταξη</span>
+    </a>
+  </div>
+
+  <div class="section-label">Διαχείριση (admin)</div>
+  <div class="viewgrid">
+    <a class="view" href="vaggelis-admin-dashboard.html">
+      <span class="route">/admin</span>
+      <h2>Ταμπλό διαχείρισης</h2>
+      <p>Σύνοψη: πλήθη, πρόσφατες αλλαγές, εκκρεμότητες (π.χ. τραγούδια χωρίς ήχο), γρήγορες ενέργειες.</p>
+      <span class="chip tag">Κεντρική</span>
+    </a>
+    <a class="view" href="vaggelis-admin-songs-list.html">
+      <span class="route">/admin/songs</span>
+      <h2>Λίστα τραγουδιών</h2>
+      <p>Πίνακας με φίλτρα, αναζήτηση, bulk actions, εκκρεμότητες με κουκίδες (ήχος / στίχοι / κατηγορία).</p>
+      <span class="chip tag">Κατάλογος</span>
+    </a>
+    <a class="view" href="vaggelis-admin-song-edit.html">
+      <span class="route">/admin/songs/[id]</span>
+      <h2>Επεξεργασία τραγουδιού</h2>
+      <p>Έξι καρτέλες: Βασικά, Κείμενα, Κατηγορίες, Πηγές, Ήχος, Παραπομπές. Ενεργές φόρμες Markdown.</p>
+      <span class="chip tag">Φόρμα</span>
+    </a>
+    <a class="view" href="vaggelis-admin-region-editor.html">
+      <span class="route">/admin/regions</span>
+      <h2>Επεξεργαστής περιοχών</h2>
+      <p>Λίστα περιοχών + χάρτης με εργαλείο σχεδίασης πολυγώνων (leaflet-geoman placeholder). Audit trail κάτω.</p>
+      <span class="chip tag">Γεωμετρία</span>
+    </a>
+  </div>
+
+  <footer>
+    <span>Ταξίδι στην Παράδοση · Σκαριφήματα UI v0.1</span>
+    <span>Αλέξανδρος Π. Λιάσκος · 2026-04-22</span>
+  </footer>
+
+  <div class="wireframe-badge">ΣΚΑΡΙΦΗΜΑ · UI v0.1</div>
+</body>
+</html>

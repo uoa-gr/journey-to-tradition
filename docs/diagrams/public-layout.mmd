@@ -1,0 +1,33 @@
+flowchart TB
+  subgraph Page["Public page (/)"]
+    direction TB
+
+    subgraph Top["Top strip"]
+      GI["Γενικές πληροφορίες<br/>(general info / brand)"]
+    end
+
+    subgraph Body["Main body"]
+      direction LR
+      F["Φίλτρα<br/>(filters)<br/>• Περιοχή<br/>• Υποπεριοχή<br/>• Επί μέρους υποπ.<br/>• Νήσος<br/>• Χωριό<br/>• Τίτλος<br/>• Κατηγορία<br/>• Ρυθμός<br/>• Χορός<br/>• Γλώσσα<br/>• Λέξεις κλειδιά"]
+      M["Χάρτης<br/>(Leaflet + OSM<br/>+ GeoJSON overlays)"]
+      SP["Song panel<br/>━━━━━━<br/>11/15  ← →<br/>Τίτλος<br/>[Εναλλ. τίτλος]<br/>• attributes<br/>• description<br/>• lyrics (centred)<br/>• audio player<br/>• cross-refs"]
+    end
+
+    subgraph Bottom["Bottom strip"]
+      AP["Παραρτήματα (appendices)"]
+    end
+
+    Top --> Body --> Bottom
+    F -.->|"select ↔ sync"| M
+    M -.->|"click ↔ sync"| F
+    F -.->|"filter → counter"| SP
+    M -.->|"click → load"| SP
+    SP -.->|"cross-ref click"| M
+  end
+
+  classDef strip fill:#faf8f2,stroke:#404040,color:#1a1a1a
+  classDef main fill:#ffffff,stroke:#888888,color:#1a1a1a
+  classDef panel fill:#fafaf5,stroke:#1a1a1a,stroke-width:1.5px,color:#000000
+  class Top,Bottom strip
+  class F,M main
+  class SP panel

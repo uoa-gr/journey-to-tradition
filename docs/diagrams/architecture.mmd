@@ -1,0 +1,42 @@
+flowchart TB
+  subgraph Browser["Browser"]
+    direction TB
+    PublicRC["Public pages<br/>(Server Components)"]
+    AdminRC["Admin pages<br/>(auth-gated)"]
+    LeafletPub["Leaflet<br/>(public viewer)"]
+    LeafletAdm["Leaflet + geoman<br/>(polygon editor)"]
+    PublicRC --> LeafletPub
+    AdminRC --> LeafletAdm
+  end
+
+  subgraph Vercel["Next.js 16 on Vercel Fluid Compute"]
+    direction TB
+    AppPublic["app/(public)/...<br/>Server Components<br/>— publishable key reads"]
+    AppAdmin["app/(admin)/...<br/>auth-gated reads"]
+    RouteAPI["app/api/...<br/>Route Handlers<br/>(health, geo, MVT tiles,<br/>audio signer)"]
+    Actions["Server Actions<br/>(Node runtime · secret key<br/>· all mutations)"]
+    Proxy["proxy.ts<br/>(Node runtime · refresh session<br/>· getClaims)"]
+  end
+
+  subgraph Supabase["Supabase"]
+    direction TB
+    Postgres[("Postgres + PostGIS<br/>+ unaccent + pg_trgm<br/>+ RLS + triggers")]
+    Auth["Supabase Auth<br/>(PKCE magic link<br/>· ES256 JWT · MFA)"]
+    Storage["Storage<br/>(audio bucket · public read<br/>· admin write · Smart CDN)"]
+  end
+
+  Browser <-->|"HTTPS + cookies"| Vercel
+  Proxy -->|"getClaims() — local WebCrypto"| Auth
+  AppPublic -->|"publishable key / PostgREST"| Postgres
+  AppAdmin -->|"publishable key / PostgREST"| Postgres
+  Actions -->|"SECRET KEY<br/>TO service_role writes"| Postgres
+  Actions -->|"SECRET KEY<br/>signed upload URLs"| Storage
+  RouteAPI -->|"publishable key"| Postgres
+  Browser -->|"direct GET (public CDN)"| Storage
+
+  classDef layer fill:#faf8f2,stroke:#404040,stroke-width:1px,color:#1a1a1a
+  classDef box fill:#ffffff,stroke:#888888,stroke-width:1px,color:#1a1a1a
+  classDef db fill:#fafaf5,stroke:#1a1a1a,stroke-width:2px,color:#000000
+  class Browser,Vercel,Supabase layer
+  class PublicRC,AdminRC,LeafletPub,LeafletAdm,AppPublic,AppAdmin,RouteAPI,Actions,Proxy,Auth,Storage box
+  class Postgres db

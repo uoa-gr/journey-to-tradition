@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8"/>
+  <title>Ταμπλό διαχείρισης — Ταξίδι στην Παράδοση</title>
+  <link rel="stylesheet" href="_wireframe.css"/>
+  <style>
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .dash-grid .card.span-2 { grid-column: span 2; }
+    .dash-grid .card.span-4 { grid-column: span 4; }
+    .dash-grid .card.span-3 { grid-column: span 3; }
+    .trend {
+      font-size: var(--text-xs);
+      color: var(--stone);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
+    .trend .up { color: var(--ink); }
+    .trend .down { color: var(--ash); }
+    .feed {
+      list-style: none;
+      font-size: var(--text-sm);
+    }
+    .feed li {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: var(--space-2);
+      padding: 10px 0;
+      border-bottom: 1px dotted var(--fog);
+      align-items: baseline;
+    }
+    .feed li:last-child { border-bottom: none; }
+    .feed .when { color: var(--ash); font-size: var(--text-xs); letter-spacing: 0.04em; }
+    .feed .what { color: var(--charcoal); }
+    .feed .what strong { font-weight: 500; color: var(--ink); }
+    .feed .what .code { font-family: "JetBrains Mono", Consolas, monospace; font-size: var(--text-2xs); color: var(--stone); margin-left: 6px; }
+    .feed .who {
+      font-size: var(--text-2xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ash);
+    }
+    .todo-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: var(--space-2);
+      padding: 8px 0;
+      border-bottom: 1px dotted var(--fog);
+      font-size: var(--text-sm);
+      align-items: center;
+    }
+    .todo-row:last-child { border-bottom: none; }
+    .todo-row .count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+    .todo-row .arrow { color: var(--ash); }
+    .quickact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+    }
+    .quickact .btn { justify-content: center; text-align: center; }
+    .coverage-map {
+      height: 240px;
+      background:
+        radial-gradient(circle at 35% 40%, rgba(0,0,0,0.1) 0, transparent 40%),
+        radial-gradient(circle at 55% 55%, rgba(0,0,0,0.08) 0, transparent 35%),
+        radial-gradient(circle at 65% 35%, rgba(0,0,0,0.06) 0, transparent 30%),
+        var(--paper);
+      position: relative;
+      border: 1px solid var(--fog);
+    }
+    .coverage-map::before {
+      content: "ΧΑΡΤΗΣ ΚΑΛΥΨΗΣ ΑΝΑ ΠΕΡΙΟΧΗ";
+      position: absolute; top: 8px; left: 12px;
+      font-size: var(--text-2xs); letter-spacing: 0.2em;
+      color: var(--ash);
+    }
+    .coverage-map .dot {
+      position: absolute; width: 10px; height: 10px; border-radius: 50%;
+      background: var(--ink);
+    }
+    .coverage-map .dot.big { width: 18px; height: 18px; background: var(--charcoal); }
+    .coverage-legend { font-size: var(--text-xs); color: var(--ash); margin-top: 8px; letter-spacing: 0.04em; }
+
+    @media (max-width: 960px) {
+      .dash-grid { grid-template-columns: repeat(2, 1fr); }
+      .dash-grid .card.span-3, .dash-grid .card.span-4 { grid-column: span 2; }
+    }
+    @media (max-width: 720px) {
+      .admin-shell { grid-template-columns: 1fr; }
+      .admin-shell > aside { border-right: none; border-bottom: 1px solid var(--fog); }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <aside>
+      <div class="brand" style="padding: 0 var(--space-3) var(--space-3); font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: var(--text-lg); color: var(--ink); border-bottom: 1px solid var(--fog); margin-bottom: var(--space-2);">
+        Ταξίδι στην Παράδοση
+        <div class="label-tracked" style="margin-top: 6px; color: var(--ash); font-style: normal; font-family: var(--font-sans); letter-spacing: 0.2em;">Διαχείριση</div>
+      </div>
+      <ul class="adminnav">
+        <li><a href="vaggelis-admin-dashboard.html" aria-current="page">Ταμπλό</a></li>
+        <li><span class="group">Περιεχόμενο</span></li>
+        <li><a href="vaggelis-admin-songs-list.html">Τραγούδια</a></li>
+        <li><a href="#">Κατηγορίες</a></li>
+        <li><a href="#">Ρυθμοί</a></li>
+        <li><a href="#">Χοροί</a></li>
+        <li><a href="#">Γλώσσες</a></li>
+        <li><a href="#">Παραρτήματα</a></li>
+        <li><span class="group">Γεωγραφία</span></li>
+        <li><a href="vaggelis-admin-region-editor.html">Περιοχές</a></li>
+        <li><a href="#">Υποπεριοχές</a></li>
+        <li><a href="#">Επί μέρους Υποπ.</a></li>
+        <li><a href="#">Νησιά</a></li>
+        <li><a href="#">Χωριά</a></li>
+        <li><span class="group">Εργαλεία</span></li>
+        <li><a href="#">Εισαγωγή XLSX</a></li>
+        <li><a href="#">Ιστορικό αλλαγών</a></li>
+        <li><span class="group">Λογαριασμός</span></li>
+        <li><a href="#">Προφίλ (Ε. Σπύρου)</a></li>
+        <li><a href="#">Αποσύνδεση</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <header class="admin-header">
+        <div>
+          <h1>Καλωσήρθατε, Ευάγγελε</h1>
+          <p class="meta" style="margin-top: 4px;">Τελευταία σύνδεση: 21 Απριλίου 2026, 20:22</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn--ghost" href="vaggelis-admin-songs-list.html">Λίστα τραγουδιών</a>
+          <a class="btn btn--primary" href="vaggelis-admin-song-edit.html">+ Νέο τραγούδι</a>
+        </div>
+      </header>
+
+      <section class="dash-grid">
+        <div class="card">
+          <div class="label-tracked">Τραγούδια</div>
+          <div class="stat">287</div>
+          <div class="trend"><span class="up">+ 12</span> · τις τελευταίες 7 ημέρες</div>
+        </div>
+        <div class="card">
+          <div class="label-tracked">Περιοχές</div>
+          <div class="stat">10</div>
+          <div class="trend">Πλήρης κάλυψη · 48 υποπεριοχές</div>
+        </div>
+        <div class="card">
+          <div class="label-tracked">Ηχητικά</div>
+          <div class="stat">164</div>
+          <div class="trend">57% κάλυψη · 123 χωρίς ήχο</div>
+        </div>
+        <div class="card">
+          <div class="label-tracked">Παραπομπές</div>
+          <div class="stat">412</div>
+          <div class="trend">3.4 μέσες ανά τραγούδι με ήχο</div>
+        </div>
+
+        <div class="card span-2">
+          <h3>Πρόσφατες αλλαγές</h3>
+          <p class="meta" style="margin-bottom: var(--space-2);">Οι τελευταίες 10 ενέργειες στο αρχείο.</p>
+          <ul class="feed">
+            <li><span class="when">πριν 12′</span><span class="what"><strong>Προστέθηκε ηχητικό</strong> <span class="code">EPE-THS-014</span> — Φιλιππιάδα</span><span class="who">Ε.Σ.</span></li>
+            <li><span class="when">πριν 48′</span><span class="what"><strong>Ενημερώθηκε περιγραφή</strong> «Μαλάμω» <span class="code">RML-042</span></span><span class="who">Ε.Σ.</span></li>
+            <li><span class="when">πριν 2 ώ.</span><span class="what"><strong>Δημιουργήθηκε νέα υποπεριοχή</strong> Θεσπρωτία (Ήπειρος)</span><span class="who">Ε.Σ.</span></li>
+            <li><span class="when">χθες</span><span class="what"><strong>Νέο τραγούδι</strong> «Βρυσούδα» <span class="code">EPE-THS-013</span></span><span class="who">Α.Λ.</span></li>
+            <li><span class="when">χθες</span><span class="what"><strong>Προστέθηκε παραπομπή</strong> Καραγιαννίνα ↔ Μαλάμω (μελωδική)</span><span class="who">Ε.Σ.</span></li>
+            <li><span class="when">2 ημ.</span><span class="what"><strong>Τροποποιήθηκε πολύγωνο</strong> Ηπείρου (προσθήκη Σουλίου)</span><span class="who">Ε.Σ.</span></li>
+            <li><span class="when">2 ημ.</span><span class="what"><strong>Μαζική εισαγωγή</strong> 23 τραγούδια (Θεσσαλονίκη.xlsx)</span><span class="who">Α.Λ.</span></li>
+          </ul>
+          <div style="margin-top: var(--space-2); text-align: right;"><a href="#" class="link meta">Όλες οι αλλαγές →</a></div>
+        </div>
+
+        <div class="card span-2">
+          <h3>Εκκρεμότητες</h3>
+          <p class="meta" style="margin-bottom: var(--space-2);">Λίστες τραγουδιών που χρειάζονται προσοχή.</p>
+          <div class="todo-row">
+            <span>Χωρίς ηχητικό</span>
+            <span class="count">123</span>
+            <a href="vaggelis-admin-songs-list.html" class="arrow">→</a>
+          </div>
+          <div class="todo-row">
+            <span>Χωρίς στίχους</span>
+            <span class="count">41</span>
+            <a href="#" class="arrow">→</a>
+          </div>
+          <div class="todo-row">
+            <span>Χωρίς κατηγορία</span>
+            <span class="count">18</span>
+            <a href="#" class="arrow">→</a>
+          </div>
+          <div class="todo-row">
+            <span>Ήχος χωρίς άδεια χρήσης</span>
+            <span class="count">9</span>
+            <a href="#" class="arrow">→</a>
+          </div>
+          <div class="todo-row">
+            <span>Απροσδιόριστος ρυθμός</span>
+            <span class="count">27</span>
+            <a href="#" class="arrow">→</a>
+          </div>
+        </div>
+
+        <div class="card span-3 card--paper">
+          <h3>Χάρτης κάλυψης</h3>
+          <p class="meta" style="margin-bottom: var(--space-2);">Ένα σημείο ανά περιοχή — μέγεθος δηλώνει πλήθος τραγουδιών.</p>
+          <div class="coverage-map">
+            <!-- fake dots -->
+            <span class="dot big" style="top: 40%; left: 25%;"></span>
+            <span class="dot" style="top: 55%; left: 35%;"></span>
+            <span class="dot big" style="top: 30%; left: 50%;"></span>
+            <span class="dot" style="top: 65%; left: 48%;"></span>
+            <span class="dot" style="top: 45%; left: 60%;"></span>
+            <span class="dot big" style="top: 70%; left: 70%;"></span>
+            <span class="dot" style="top: 35%; left: 78%;"></span>
+            <span class="dot" style="top: 80%; left: 55%;"></span>
+          </div>
+          <div class="coverage-legend">Ήπειρος · Πελοπόννησος · Ιόνιο · Αιγαίο · Πόντος · Κύπρος · Κρήτη · Θεσσαλία · Θράκη · Μακεδονία</div>
+        </div>
+
+        <div class="card">
+          <h3>Γρήγορες ενέργειες</h3>
+          <div class="quickact mt-2">
+            <a class="btn" href="vaggelis-admin-song-edit.html">Νέο τραγούδι</a>
+            <a class="btn" href="vaggelis-admin-region-editor.html">Επεξ. περιοχής</a>
+            <a class="btn btn--ghost" href="#">Εισαγωγή XLSX</a>
+            <a class="btn btn--ghost" href="#">Εξαγωγή αρχείου</a>
+          </div>
+
+          <div class="rule-dotted" style="margin: var(--space-3) 0;"></div>
+
+          <div class="label-tracked">Σύνδεση</div>
+          <p class="meta mt-2">Συνδεδεμένος ως</p>
+          <p style="font-weight: 500; color: var(--ink); margin-top: 2px;">Ευάγγελος Σπύρου</p>
+          <p class="meta">evspyrou@geol.uoa.gr · admin</p>
+          <p class="meta mt-2">MFA: <span style="color: var(--ash);">όχι ενεργό</span> · <a href="#" class="link">ενεργοποίηση</a></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="wireframe-badge">ΣΚΑΡΙΦΗΜΑ · /admin</div>
+</body>
+</html>

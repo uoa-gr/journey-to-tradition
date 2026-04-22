@@ -1,0 +1,28 @@
+flowchart TB
+  subgraph Page["Δημόσια σελίδα"]
+    direction TB
+
+    subgraph Top["Επάνω"]
+      GI["Γενικές πληροφορίες — τίτλος, πλοήγηση"]
+    end
+
+    subgraph Body["Κυρίως σώμα"]
+      direction LR
+      F["Φίλτρα<br/>━━━━<br/>Περιοχή<br/>Υποπεριοχή<br/>Κατηγορία<br/>Ρυθμός<br/>Χορός<br/>Γλώσσα<br/>Λέξεις-κλειδιά"]
+      M["Χάρτης<br/>━━━━<br/>Πολύγωνα περιοχών<br/>+ σημεία χωριών<br/>+ zoom σε επιλογή"]
+      SP["Πάνελ τραγουδιού<br/>━━━━<br/>11/15 ← →<br/>Τίτλος · Στίχοι<br/>Περιγραφή<br/>Ήχος<br/>Παραπομπές"]
+    end
+
+    subgraph Bottom["Κάτω"]
+      AP["Παραρτήματα"]
+    end
+
+    Top --> Body --> Bottom
+  end
+
+  classDef strip fill:#faf8f2,stroke:#404040,color:#1a1a1a
+  classDef main  fill:#ffffff,stroke:#888888,color:#1a1a1a
+  classDef panel fill:#fafaf5,stroke:#1a1a1a,stroke-width:1.5px,color:#000000
+  class Top,Bottom strip
+  class F,M main
+  class SP panel

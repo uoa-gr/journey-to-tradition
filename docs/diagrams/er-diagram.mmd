@@ -1,0 +1,140 @@
+erDiagram
+  profiles ||--o{ songs : "edited_by"
+  regions ||--o{ subregions : contains
+  regions ||--o{ islands : contains
+  regions ||--o{ villages : contains
+  regions ||--o{ songs : anchors
+  subregions ||--o{ specific_subregions : contains
+  subregions ||--o{ villages : contains
+  subregions ||--o{ songs : refines
+  specific_subregions ||--o{ villages : contains
+  specific_subregions ||--o{ songs : refines
+  islands ||--o{ villages : contains
+  islands ||--o{ songs : anchors
+  villages ||--o{ songs : anchors
+  rhythms ||--o{ songs : classifies
+  rhythms }o--|| appendices : explained_in
+  dances ||--o{ songs : classifies
+  songs ||--|{ song_categories : tagged
+  categories ||--o{ song_categories : used_by
+  songs ||--|{ song_languages : spoken
+  languages ||--o{ song_languages : spoken
+  songs ||--o{ song_references : points_from
+  songs ||--o{ song_references : points_to
+
+  profiles {
+    uuid id PK
+    text full_name
+    enum role
+    timestamptz created_at
+  }
+  regions {
+    uuid id PK
+    text code UK
+    text name_el
+    text name_en
+    geometry geom
+    int display_order
+    timestamptz created_at
+    timestamptz updated_at
+  }
+  subregions {
+    uuid id PK
+    uuid region_id FK
+    text code
+    text name_el
+    text name_en
+    geometry geom
+  }
+  specific_subregions {
+    uuid id PK
+    uuid subregion_id FK
+    text code
+    text name_el
+    text name_en
+    text label_override
+    geometry geom
+  }
+  islands {
+    uuid id PK
+    uuid region_id FK
+    uuid subregion_id FK
+    text code
+    text name_el
+    text name_en
+    geometry geom
+  }
+  villages {
+    uuid id PK
+    uuid region_id FK
+    uuid subregion_id FK
+    uuid specific_subregion_id FK
+    uuid island_id FK
+    text name_el
+    text name_en
+    geometry geom
+  }
+  categories {
+    uuid id PK
+    text name_el
+    text description_el
+  }
+  rhythms {
+    uuid id PK
+    text name_el
+    uuid appendix_id FK
+  }
+  dances {
+    uuid id PK
+    text name_el
+  }
+  languages {
+    uuid id PK
+    text code UK
+    text name_el
+  }
+  appendices {
+    uuid id PK
+    text title_el
+    text content_md
+  }
+  songs {
+    uuid id PK
+    text code UK
+    text title_el
+    text alt_title_el
+    uuid region_id FK
+    uuid subregion_id FK
+    uuid specific_subregion_id FK
+    uuid island_id FK
+    uuid village_id FK
+    uuid rhythm_id FK
+    uuid dance_id FK
+    text recording_by
+    text description_md
+    text lyrics_md
+    text comments_md
+    jsonb information_sources
+    text audio_source
+    text audio_path
+    tsvector search_vec
+    uuid created_by FK
+    uuid updated_by FK
+    timestamptz created_at
+    timestamptz updated_at
+  }
+  song_categories {
+    uuid song_id FK
+    uuid category_id FK
+    int rank
+  }
+  song_languages {
+    uuid song_id FK
+    uuid language_id FK
+  }
+  song_references {
+    uuid song_id FK
+    uuid referenced_song_id FK
+    enum relation_type
+    text note
+  }

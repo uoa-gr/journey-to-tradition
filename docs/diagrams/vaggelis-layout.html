@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <title>Διάταξη δημόσιας σελίδας — Ταξίδι στην Παράδοση</title>
+    <style>
+      :root {
+        --ink: #1a1a1a;
+        --charcoal: #333333;
+        --slate: #555555;
+        --stone: #666666;
+        --ash: #888888;
+        --mist: #b0b0b0;
+        --fog: #e0e0e0;
+        --paper: #faf8f2;
+        --white: #fdfcf6;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        font-family: Inter, "Segoe UI", Arial, sans-serif;
+        background: var(--white);
+        color: var(--charcoal);
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        /* Fluid: fills the browser viewport so the footer never falls below the fold.
+           Puppeteer renders this at 1200×900 for PNG capture. */
+        min-height: 100vh;
+        height: 100vh;
+        width: 100%;
+        padding: 20px;
+        overflow: hidden;
+      }
+      .frame {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 180px 1fr 280px;
+        grid-template-rows: minmax(0, 1fr) 76px;
+        grid-template-areas:
+          "filters center panel"
+          "appendices appendices appendices";
+        gap: 12px;
+        border: 1.5px solid var(--ink);
+        padding: 12px;
+        background: var(--white);
+        overflow: hidden;
+      }
+      .cell { overflow: hidden; min-height: 0; min-width: 0; }
+      .filters { overflow-y: auto; }
+      .panel { overflow-y: auto; }
+      .center { min-height: 0; }
+      .map { min-height: 0; }
+
+      .cell {
+        border: 1.25px solid var(--charcoal);
+        background: var(--white);
+        display: flex;
+        flex-direction: column;
+      }
+      .cell--paper { background: var(--paper); }
+      .cell--strong { border-width: 2px; }
+
+      .cell h2 {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink);
+        text-align: center;
+        padding: 10px 8px 6px;
+        letter-spacing: 0.02em;
+      }
+      .hairline {
+        height: 1px;
+        background: var(--fog);
+        margin: 0 16px;
+      }
+
+      /* Filters */
+      .filters { grid-area: filters; }
+      .filters ul {
+        list-style: none;
+        padding: 12px 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .filters li {
+        font-size: 13px;
+        color: var(--slate);
+        padding: 8px 10px;
+        border: 1px solid var(--fog);
+        background: #fff;
+        border-radius: 2px;
+        text-align: center;
+      }
+      .filters li.dropdown::after {
+        content: " ▾";
+        color: var(--ash);
+      }
+      .filters li.combo::after {
+        content: " ⌄";
+        color: var(--ash);
+      }
+      .filters li.search {
+        text-align: left;
+        padding-left: 24px;
+        background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23888" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/></svg>') 8px center no-repeat;
+      }
+
+      /* Center column */
+      .center {
+        grid-area: center;
+        display: grid;
+        grid-template-rows: 64px minmax(0, 1fr);
+        gap: 12px;
+        border: none;
+        background: transparent;
+      }
+      .generalinfo {
+        border: 1.25px solid var(--charcoal);
+        background: var(--paper);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+      .generalinfo .brand {
+        font-size: 20px;
+        font-style: italic;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .generalinfo .nav {
+        display: flex;
+        gap: 24px;
+        font-size: 12px;
+        color: var(--stone);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .map {
+        border: 1.25px solid var(--charcoal);
+        background: var(--white);
+        position: relative;
+        overflow: hidden;
+      }
+      .map::before {
+        content: "Χάρτης";
+        position: absolute;
+        top: 10px;
+        left: 16px;
+        font-size: 13px;
+        color: var(--ash);
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+      }
+      .map svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* Song panel */
+      .panel { grid-area: panel; }
+      .panel .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--fog);
+        font-variant-numeric: tabular-nums;
+      }
+      .panel .counter {
+        font-size: 12px;
+        color: var(--ash);
+        letter-spacing: 0.1em;
+      }
+      .panel .navbtns {
+        font-size: 14px;
+        color: var(--stone);
+        letter-spacing: 0.3em;
+      }
+      .panel .title {
+        padding: 12px 14px 2px;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .panel .alt {
+        padding: 0 14px 10px;
+        font-size: 12px;
+        font-style: italic;
+        color: var(--stone);
+      }
+      .panel .attrs {
+        margin: 0 14px;
+        border: 1px solid var(--fog);
+        padding: 10px;
+        font-size: 11px;
+        color: var(--slate);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 4px 10px;
+      }
+      .panel .attrs dt { color: var(--ash); }
+      .panel .attrs dd { color: var(--charcoal); }
+      .panel .section-label {
+        padding: 14px 14px 4px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--ash);
+      }
+      .panel .textlines {
+        padding: 0 14px;
+      }
+      .panel .textlines span {
+        display: block;
+        height: 6px;
+        margin-bottom: 4px;
+        background: var(--fog);
+        border-radius: 1px;
+      }
+      .panel .textlines span:nth-child(1) { width: 100%; }
+      .panel .textlines span:nth-child(2) { width: 92%; }
+      .panel .textlines span:nth-child(3) { width: 96%; }
+      .panel .textlines span:nth-child(4) { width: 68%; }
+      .panel .audio {
+        margin: 10px 14px;
+        border: 1px solid var(--charcoal);
+        padding: 8px 12px;
+        font-size: 11px;
+        color: var(--stone);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel .audio .play {
+        width: 16px; height: 16px;
+        background: var(--ink);
+        clip-path: polygon(20% 0, 100% 50%, 20% 100%);
+      }
+      .panel .audio .bar {
+        flex: 1;
+        height: 3px;
+        background: var(--fog);
+        position: relative;
+      }
+      .panel .audio .bar::after {
+        content: "";
+        position: absolute; left: 0; top: 0; bottom: 0;
+        width: 35%;
+        background: var(--ink);
+      }
+      .panel .xrefs {
+        display: flex;
+        gap: 6px;
+        padding: 4px 14px 14px;
+        flex-wrap: wrap;
+      }
+      .panel .xref {
+        font-size: 10px;
+        padding: 3px 8px;
+        border: 1px solid var(--fog);
+        background: #fff;
+        color: var(--slate);
+        font-style: italic;
+      }
+
+      /* Appendices */
+      .appendices {
+        grid-area: appendices;
+        background: var(--paper);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .appendices .row {
+        display: flex;
+        gap: 40px;
+        font-size: 12px;
+        color: var(--stone);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .appendices .row span::before {
+        content: "§ ";
+        color: var(--ash);
+      }
+
+      /* Corner labels */
+      .tag {
+        position: absolute;
+        top: 6px;
+        left: 10px;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ash);
+      }
+      .cell { position: relative; }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <!-- FILTERS (left column, full height of main area) -->
+      <aside class="cell cell--paper filters">
+        <h2>Φίλτρα</h2>
+        <div class="hairline"></div>
+        <ul>
+          <li class="dropdown">Περιοχή</li>
+          <li class="combo">Υποπεριοχή</li>
+          <li class="combo">Κατηγορία</li>
+          <li class="combo">Ρυθμός</li>
+          <li class="combo">Χορός</li>
+          <li class="dropdown">Γλώσσα</li>
+          <li class="search">Λέξεις-κλειδιά</li>
+        </ul>
+      </aside>
+
+      <!-- CENTER (general info strip above + map below) -->
+      <section class="center">
+        <header class="generalinfo">
+          <span class="brand">Ταξίδι στην Παράδοση</span>
+          <nav class="nav">
+            <span>Σχετικά</span>
+            <span>Μέθοδοι</span>
+            <span>Πηγές</span>
+          </nav>
+        </header>
+        <div class="map">
+          <!-- Stylised map schematic -->
+          <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+            <!-- Region polygons -->
+            <path d="M 80 60 L 180 40 L 240 110 L 200 180 L 100 170 Z"
+                  fill="#f5f1e8" stroke="#666" stroke-width="1.2"/>
+            <path d="M 240 110 L 340 80 L 400 160 L 320 210 L 200 180 Z"
+                  fill="#fff" stroke="#666" stroke-width="1.2"/>
+            <path d="M 320 210 L 420 200 L 480 290 L 360 320 L 280 280 Z"
+                  fill="#f5f1e8" stroke="#666" stroke-width="1.2"/>
+            <path d="M 100 170 L 200 180 L 280 280 L 160 310 L 80 250 Z"
+                  fill="#fff" stroke="#666" stroke-width="1.2"/>
+            <!-- Islands -->
+            <circle cx="480" cy="90" r="14" fill="#fff" stroke="#666" stroke-width="1"/>
+            <circle cx="510" cy="130" r="10" fill="#fff" stroke="#666" stroke-width="1"/>
+            <circle cx="540" cy="180" r="8" fill="#fff" stroke="#666" stroke-width="1"/>
+            <!-- Village markers -->
+            <circle cx="170" cy="120" r="3" fill="#1a1a1a"/>
+            <circle cx="210" cy="150" r="3" fill="#1a1a1a"/>
+            <circle cx="290" cy="130" r="3" fill="#1a1a1a"/>
+            <circle cx="320" cy="180" r="3" fill="#1a1a1a"/>
+            <circle cx="380" cy="240" r="3" fill="#1a1a1a"/>
+            <circle cx="160" cy="220" r="3" fill="#1a1a1a"/>
+            <circle cx="210" cy="260" r="3" fill="#1a1a1a"/>
+            <!-- Label -->
+            <text x="300" y="360" text-anchor="middle" font-size="11" fill="#888"
+                  font-family="Inter, sans-serif"
+                  letter-spacing="2px">
+              ΠΟΛΥΓΩΝΑ ΠΕΡΙΟΧΩΝ · ΣΗΜΕΙΑ ΧΩΡΙΩΝ · ZOOM ΣΕ ΕΠΙΛΟΓΗ
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- SONG PANEL (right column, full height of main area) -->
+      <aside class="cell cell--strong panel">
+        <div class="topbar">
+          <span class="counter">11 / 15</span>
+          <span class="navbtns">← →</span>
+        </div>
+        <div class="title">Μπρυσούδα μου τριχαμνιά</div>
+        <div class="alt">[Βρύση μου πετροκαμάρι]</div>
+        <dl class="attrs">
+          <dt>Περιοχή</dt><dd>Ήπειρος</dd>
+          <dt>Υποπεριοχή</dt><dd>Θεσπρωτία</dd>
+          <dt>Κατηγορία</dt><dd>Τραγούδι της ξενιτιάς</dd>
+          <dt>Ρυθμός</dt><dd>Τρεχάτος</dd>
+          <dt>Γλώσσα</dt><dd>Ελληνικά</dd>
+        </dl>
+        <div class="section-label">Περιγραφή</div>
+        <div class="textlines">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="section-label">Ήχος</div>
+        <div class="audio">
+          <span class="play"></span>
+          <span class="bar"></span>
+          <span>2:34</span>
+        </div>
+        <div class="section-label">Παραπομπές</div>
+        <div class="xrefs">
+          <span class="xref">Καραγιαννίνα</span>
+          <span class="xref">Μαλάμω</span>
+        </div>
+      </aside>
+
+      <!-- APPENDICES (bottom row, full width) -->
+      <footer class="cell appendices">
+        <div class="row">
+          <span>Ρυθμοί</span>
+          <span>Κατηγορίες</span>
+          <span>Πηγές</span>
+          <span>Ιστορικό</span>
+          <span>Ευχαριστίες</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

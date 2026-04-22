@@ -1,0 +1,33 @@
+sequenceDiagram
+  autonumber
+  actor U as Vaggelis admin
+  participant B as Browser
+  participant PX as proxy.ts<br/>Next 16 Node runtime
+  participant SA as Server Component<br/>/admin/*
+  participant AUTH as Supabase Auth<br/>ES256 JWT
+  participant DB as Postgres<br/>profiles
+
+  U->>B: Visit /admin/songs
+  B->>PX: GET /admin/songs with cookies
+  PX->>PX: createServerClient<br/>await cookies<br/>publishable key
+  PX->>AUTH: getClaims<br/>local WebCrypto verify<br/>rotates refresh token
+  AUTH-->>PX: claims or null
+  alt claims == null
+    PX-->>B: 307 redirect to /admin/login<br/>next param origin-allowlisted
+  else claims present
+    PX->>B: set refreshed Set-Cookie<br/>SameSite=Strict on /admin/*
+    PX->>SA: continue request
+    SA->>SA: createServerClient<br/>await cookies
+    SA->>AUTH: getClaims<br/>authoritative local verify
+    AUTH-->>SA: claims
+    SA->>DB: SELECT role FROM public.profiles<br/>WHERE id = auth.uid()
+    DB-->>SA: role = admin
+    alt role in admin or editor
+      SA-->>B: render page<br/>Server Component
+    else
+      SA-->>B: forbidden Next 16 authInterrupt 403
+    end
+  end
+
+  Note over SA,AUTH: Never use getSession for authorization —<br/>cookies are unverified and forgeable
+  Note over PX,AUTH: getClaims runs locally without network round trip<br/>on asymmetric JWT signing keys ES256
